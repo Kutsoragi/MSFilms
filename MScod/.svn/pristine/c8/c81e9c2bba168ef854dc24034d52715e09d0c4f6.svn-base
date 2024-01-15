@@ -1,0 +1,35 @@
+package presentacion.eventos;
+
+public class EventosFacturaTienda {
+
+	public static final int ABRIR_FACTURA_TIENDA = 175;
+	public static final int AÑADIR_PRODUCTO = 176;
+	public static final int QUITAR_PRODUCTO = 177;
+	public static final int CERRAR_FACTURA_TIENDA = 178;
+	public static final int DEVOLVER_PRODUCTO = 179;
+	public static final int BUSCAR_FACTURA_TIENDA = 180;
+	public static final int MOSTRAR_FACTURA_POR_PRODUCTO_CON_PRECIO_MINIMO = 181;
+
+	// ------------
+
+	//public static final int ABRIR_FACTURA_TIENDA_OK = 182;
+	//public static final int ABRIR_FACTURA_TIENDA_KO = 183;
+		
+	public static final int AÑADIR_PRODUCTO_OK = 184;
+	public static final int AÑADIR_PRODUCTO_KO = 185;
+		
+	public static final int QUITAR_PRODUCTO_OK = 186;
+	public static final int QUITAR_PRODUCTO_KO = 187;
+	
+	public static final int CERRAR_FACTURA_TIENDA_OK = 188;
+	public static final int CERRAR_FACTURA_TIENDA_KO = 189;
+	
+	public static final int DEVOLVER_PRODUCTO_OK = 190;
+	public static final int DEVOLVER_PRODUCTO_KO = 191;
+		
+	public static final int BUSCAR_FACTURA_TIENDA_OK = 192;
+	public static final int BUSCAR_FACTURA_TIENDA_KO = 193;
+
+	public static final int MOSTRAR_FACTURA_POR_PRODUCTO_CON_PRECIO_MINIMO_OK = 194;
+	public static final int MOSTRAR_FACTURA_POR_PRODUCTO_CON_PRECIO_MINIMO_KO = 195;
+}

@@ -1,0 +1,21 @@
+package presentacion.command.producto;
+
+import negocio.factoria_sa.SAFactoria;
+import negocio.producto.TProducto;
+import presentacion.command.Command;
+import presentacion.controller.Context;
+import presentacion.controller.Evento;
+
+public class MostrarProductoMasCaloricoCommand implements Command {
+
+	public Context execute(Object data) {
+		Context context;
+		TProducto res = SAFactoria.getInstancia().generarSAProducto().mostrarProductoMasCalorico();
+		if (res != null)
+			context = new Context(Evento.MOSTRAR_PRODUCTO_MAS_CALORICO_OK, res);
+		else
+			context = new Context(Evento.MOSTRAR_PRODUCTO_MAS_CALORICO_KO, "No hay Productos que mostrar.");
+		
+		return context;
+	}
+}

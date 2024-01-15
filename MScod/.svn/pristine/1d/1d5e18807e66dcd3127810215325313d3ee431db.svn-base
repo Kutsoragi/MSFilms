@@ -1,0 +1,210 @@
+package negocio.factura;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+
+import integracion.empleado.DAOEmpleado;
+import integracion.factoria_dao.DAOFactoria;
+import integracion.factura.DAOFactura;
+import integracion.factura.DAOLineaFactura;
+import integracion.pase.DAOPase;
+import integracion.transactions.Transaction;
+import integracion.transactions.TransactionManager;
+import negocio.empleado.TEmpleado;
+import negocio.pase.TPase;
+
+public class SAFacturaImpl implements SAFactura {
+
+	public TCarrito abrirFactura() {
+		return new TCarrito();
+	}
+	
+	private TLineaFactura getLinea(LinkedList<TLineaFactura> lineasFactura, int idPase) {
+		TLineaFactura lineaFactura = null;
+		ListIterator<TLineaFactura> iterator = lineasFactura.listIterator();
+		while (lineaFactura == null && iterator.hasNext()) {
+			TLineaFactura linea = iterator.next();
+			if (linea.getIdPase() == idPase)
+				lineaFactura = linea;
+		}
+		return lineaFactura;
+	}
+	
+	private void removeLineaFactura(LinkedList<TLineaFactura> lineasFactura, int idPase) {
+		ListIterator<TLineaFactura> iterator = lineasFactura.listIterator();
+		while(iterator.hasNext()) {
+		    if(iterator.next().getIdPase() == idPase)
+		    	iterator.remove();
+		}
+	}
+	
+	public TCarrito añadirPase(TCarrito carrito) {
+		int idPase =  carrito.getIdPaseAuxiliar();
+		int cantidad = carrito.getCantidadAuxiliar();
+		LinkedList<TLineaFactura> lineasFactura = carrito.getLineasFactura();
+		
+		TLineaFactura lineaFactura = getLinea(lineasFactura, idPase);
+		if (lineaFactura != null)
+			lineaFactura.setCantidad(lineaFactura.getCantidad() + cantidad);
+		else
+			lineasFactura.add(new TLineaFactura(idPase, cantidad));
+		
+		return carrito;
+	}
+
+	public TCarrito quitarPase(TCarrito carrito) {
+		int idPase =  carrito.getIdPaseAuxiliar();
+		int cantidad = carrito.getCantidadAuxiliar();
+		LinkedList<TLineaFactura> lineasFactura = carrito.getLineasFactura();
+		
+		TLineaFactura lineaFactura = getLinea(lineasFactura, idPase);
+		if (lineaFactura != null) {
+			int nuevaCantidad = lineaFactura.getCantidad() - cantidad;
+			if (nuevaCantidad <= 0)
+				removeLineaFactura(lineasFactura, idPase);
+			else
+				lineaFactura.setCantidad(nuevaCantidad);
+		} else {
+			throw new NullPointerException("El pase especificado no existe en la factura.");
+		}
+		
+		return carrito;
+	}
+	
+	public boolean cerrarFactura(TCarrito carrito) {
+		int idEmpleado = carrito.getFactura().getIdEmpleado();
+
+		
+		Transaction transaction = TransactionManager.getInstance().newTransaction();
+		// validar empleado
+		DAOEmpleado daoEmpleado = DAOFactoria.getInstancia().generarDAOEmpleado();
+		TEmpleado empleadLeido = daoEmpleado.buscarEmpleadoPorID(idEmpleado);
+		if (empleadLeido == null || !empleadLeido.isActivo()){
+			TransactionManager.getInstance().removeTransaction();
+			return false;
+		}
+		
+		// validar pases
+		DAOPase daoPase = DAOFactoria.getInstancia().generarDAOPase();
+		for (TLineaFactura l : carrito.getLineasFactura()) {
+			TPase pase = daoPase.buscarPasePorID(l.getIdPase());
+			if (pase == null || !pase.isActivo()){
+				TransactionManager.getInstance().removeTransaction();
+				return false;
+			}
+			
+			// calcular precio de linea
+			l.setPrecio(l.getCantidad()*pase.getPrecio());
+		}
+		
+		// los datos son validos y la factura es creable
+		DAOFactura daoFactura = DAOFactoria.getInstancia().generarDAOFactura(); 
+		DAOLineaFactura daoLineaFactura = DAOFactoria.getInstancia().generarDAOLineaFactura();
+		
+		int idFactura = daoFactura.insertarFactura(carrito.getFactura());
+		if (idFactura < 1){
+			TransactionManager.getInstance().removeTransaction();
+			return false;
+		}
+		
+		for (TLineaFactura l : carrito.getLineasFactura())
+			daoLineaFactura.insertarLineaFactura(l);
+		
+		transaction.commit();
+		TransactionManager.getInstance().removeTransaction();
+		return true;
+	}
+	
+	//--
+	
+	public TCarrito buscarFacturaPorID(int id) {
+		if (id < 1)
+			throw new IllegalArgumentException("ID incorrecto.");
+
+		Transaction transaction = TransactionManager.getInstance().newTransaction();
+		
+		TCarrito carrito = null;
+
+		DAOFactura daoFactura = DAOFactoria.getInstancia().generarDAOFactura();
+		TFactura factura = daoFactura.buscarFacturaPorID(id);
+		if (factura != null) {
+			DAOLineaFactura daoLineaFactura = DAOFactoria.getInstancia().generarDAOLineaFactura();
+			LinkedList<TLineaFactura> lineasFactura = daoLineaFactura.mostrarLineas(id);
+			
+			double precioTotal = 0;
+			for (TLineaFactura l : lineasFactura)
+				precioTotal += l.getPrecio();
+			
+			carrito = new TCarrito(factura, lineasFactura, precioTotal);
+			
+			transaction.commit();
+		} else {
+			transaction.rollback();
+		}
+		TransactionManager.getInstance().removeTransaction();
+		return carrito;
+	}
+	
+	public LinkedList<TCarrito> listarFacturas() {
+
+		Transaction transaction = TransactionManager.getInstance().newTransaction();
+		
+		LinkedList<TCarrito> carritos = null;
+		
+		DAOFactura daoFactura = DAOFactoria.getInstancia().generarDAOFactura();
+		List<TFactura> facturas = daoFactura.mostrarListaFacturas();
+		
+		if (facturas != null) {
+			carritos = new LinkedList<TCarrito>();
+			
+			DAOLineaFactura daoLineaFactura = DAOFactoria.getInstancia().generarDAOLineaFactura();
+			for (TFactura f : facturas) {
+				int precioTotal = 0;
+				LinkedList<TLineaFactura> lineasFactura = daoLineaFactura.mostrarLineas(f.getID());
+				
+				for (TLineaFactura l : lineasFactura)
+					precioTotal += l.getPrecio();
+				
+				carritos.add(new TCarrito(f, lineasFactura, precioTotal));
+			}
+
+			transaction.commit();
+		} else {
+			transaction.rollback();
+		}
+		TransactionManager.getInstance().removeTransaction();
+		return carritos;
+	}
+
+	public boolean devolverPase(TLineaFactura lineaFactura) {	
+		boolean valid = false;
+		Transaction transaction = TransactionManager.getInstance().newTransaction();
+		
+		DAOLineaFactura daoLineaFactura = DAOFactoria.getInstancia().generarDAOLineaFactura();
+		TLineaFactura linea = daoLineaFactura.buscarLinea(lineaFactura.getIdFactura(), lineaFactura.getIdPase());
+		if (linea != null) { // linea con pase y factura dados existe
+			DAOPase daoPase = DAOFactoria.getInstancia().generarDAOPase(); 
+			TPase pase = daoPase.buscarPasePorID(lineaFactura.getIdPase());
+			
+			int nuevaCantidad = linea.getCantidad() - lineaFactura.getCantidad();
+			if (nuevaCantidad > 0) {
+				linea.setCantidad(nuevaCantidad);
+				linea.setPrecio(linea.getPrecio() - lineaFactura.getCantidad() * pase.getPrecio());
+				daoLineaFactura.modificarLinea(linea);
+			} else {
+				daoLineaFactura.eliminarLinea(linea);
+			}
+			
+			transaction.commit();
+			valid = true;
+		}
+		else{
+			transaction.rollback();
+		}
+		
+		TransactionManager.getInstance().removeTransaction();
+		return valid;
+	}
+	
+}

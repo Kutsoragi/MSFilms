@@ -1,0 +1,66 @@
+package negocio.factura;
+
+public class TLineaFactura {
+	private int idFactura;
+	private int idPase;
+	private int cantidad;
+	private double precio;
+	
+	public TLineaFactura(int idFactura, int idPase, int cantidad) {
+		if (idFactura < 1) throw new IllegalArgumentException("ID de Factura incorrecto.");
+		if (idPase < 1) throw new IllegalArgumentException("ID de Pase incorrecto.");
+		if (cantidad < 1) throw new IllegalArgumentException("Cantidad insuficiente para devolver.");this.idFactura = idFactura;
+		
+		this.idFactura = idFactura;
+		this.idPase = idPase;
+		this.cantidad = cantidad;
+	}
+	public TLineaFactura(int idPase, int cantidad) {
+		if (idPase < 1) throw new IllegalArgumentException("ID de Pase incorrecto.");
+		if (cantidad < 1) throw new IllegalArgumentException("Cantidad insuficiente para devolver.");
+		
+		this.idPase = idPase;
+		this.cantidad = cantidad;
+	}
+	
+	public TLineaFactura(int idFactura, int idPase, int cantidad, int precio) {
+		if (idFactura < 1) throw new IllegalArgumentException("ID de Factura incorrecto.");
+		if (idPase < 1) throw new IllegalArgumentException("ID de Pase incorrecto.");
+		if (cantidad < 1) throw new IllegalArgumentException("Cantidad insuficiente para devolver.");this.idFactura = idFactura;
+		
+		this.idFactura = idFactura;
+		this.idPase = idPase;
+		this.cantidad = cantidad;
+		this.precio = precio;
+	}
+	
+	public int getIdFactura() {
+		return idFactura;
+	}
+	
+	public void setIdFactura(int idFactura) {
+		this.idFactura = idFactura;
+	}
+	public int getIdPase() {
+		return idPase;
+	}
+	
+	public int getCantidad() {
+		return cantidad;
+	}
+	
+	public double getPrecio() {
+		return precio;
+	}
+	
+	//--
+	
+	public void setCantidad(int cantidad) {
+		this.cantidad = cantidad;
+	}
+	
+	public void setPrecio(double precio) {
+		this.precio = precio;
+	}
+	
+}

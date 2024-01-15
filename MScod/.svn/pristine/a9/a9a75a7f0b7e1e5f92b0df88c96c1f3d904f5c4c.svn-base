@@ -1,0 +1,16 @@
+package negocio.factura;
+
+import java.util.LinkedList;
+
+public interface SAFactura {
+	
+	public TCarrito abrirFactura ();
+	public TCarrito añadirPase(TCarrito carrito);
+	public TCarrito quitarPase(TCarrito carrito);
+	public boolean cerrarFactura(TCarrito carrito);
+	
+	public TCarrito buscarFacturaPorID(int id);
+	public LinkedList<TCarrito> listarFacturas();
+	
+	public boolean devolverPase(TLineaFactura lineaFactura);
+}

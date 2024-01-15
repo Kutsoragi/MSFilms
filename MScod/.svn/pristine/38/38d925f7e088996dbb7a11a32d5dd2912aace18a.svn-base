@@ -1,0 +1,45 @@
+package integracion.transactions;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+public class TransactionImpl implements Transaction {
+	private Connection conn;
+
+	public TransactionImpl() {
+		try {
+			conn = DriverManager.getConnection("jdbc:mysql://83.44.25.46:3306/isfilms", "msfilms", "msfilms");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void start() {
+		try {
+			conn.setAutoCommit(false);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void commit(){
+		try {
+			conn.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void rollback(){
+		try {
+			conn.rollback();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public Connection getConnection() {
+		return conn;
+	}
+}

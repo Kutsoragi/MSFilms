@@ -1,0 +1,31 @@
+package presentacion.eventos;
+
+public class EventosPase {
+	
+	public static final int REGISTRAR_PASE = 52;
+	public static final int MODIFICAR_PASE = 53;
+	public static final int BORRAR_PASE = 54;
+	public static final int BUSCAR_PASE = 55;
+	public static final int MOSTRAR_LISTA_PASE = 56;
+	public static final int MOSTRAR_POR_PELICULA_PASE = 57;
+	
+	//------------
+	
+	public static final int REGISTRAR_PASE_OK = 58;
+	public static final int REGISTRAR_PASE_KO = 59;
+	
+	public static final int MODIFICAR_PASE_OK = 60;
+	public static final int MODIFICAR_PASE_KO = 61;
+	
+	public static final int BORRAR_PASE_OK = 62;
+	public static final int BORRAR_PASE_KO = 63;
+	
+	public static final int BUSCAR_PASE_OK = 64;
+	public static final int BUSCAR_PASE_KO = 65;
+	
+	public static final int MOSTRAR_LISTA_PASE_OK = 66;
+	public static final int MOSTRAR_LISTA_PASE_KO = 67;
+	
+	public static final int MOSTRAR_POR_PELICULA_PASE_OK = 68;
+	public static final int MOSTRAR_POR_PELICULA_PASE_KO = 69;
+}

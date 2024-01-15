@@ -1,0 +1,27 @@
+package presentacion.eventos;
+
+public class EventosProveedor {
+
+	public static final int REGISTRAR_PROVEEDOR = 115;
+	public static final int MODIFICAR_PROVEEDOR = 116;
+	public static final int BORRAR_PROVEEDOR = 117;
+	public static final int BUSCAR_PROVEEDOR = 118;
+	public static final int MOSTRAR_PROVEEDORES = 119;
+
+	// ------------
+
+	public static final int REGISTRAR_PROVEEDOR_OK = 120;
+	public static final int REGISTRAR_PROVEEDOR_KO = 121;
+
+	public static final int MODIFICAR_PROVEEDOR_OK = 122;
+	public static final int MODIFICAR_PROVEEDOR_KO = 123;
+
+	public static final int BORRAR_PROVEEDOR_OK = 124;
+	public static final int BORRAR_PROVEEDOR_KO = 125;
+
+	public static final int BUSCAR_PROVEEDOR_OK = 126;
+	public static final int BUSCAR_PROVEEDOR_KO = 127;
+
+	public static final int MOSTRAR_PROVEEDORES_OK = 128;
+	public static final int MOSTRAR_PROVEEDORES_KO = 129;
+}

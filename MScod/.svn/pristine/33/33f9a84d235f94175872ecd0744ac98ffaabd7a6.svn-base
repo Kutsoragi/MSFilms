@@ -1,0 +1,18 @@
+package integracion.pelicula;
+
+import java.util.LinkedList;
+
+import negocio.factura.Pair;
+import negocio.pelicula.TPelicula;
+
+public interface DAOPelicula {
+	
+	int registrarPelicula(TPelicula tPelicula);
+	int modificarPelicula(TPelicula tPelicula);
+	int borrarPelicula(int id);
+	public TPelicula buscarPeliculaPorID(int id);
+	LinkedList<TPelicula> mostrarListaPeliculas();
+	LinkedList<TPelicula> mostrarPeliculasPorFecha(String fecha);
+	LinkedList<Pair<String, Integer>> mostrarTopPeliculasVendidas();
+	TPelicula buscarPeliculaPorNombre(String nombre);
+}

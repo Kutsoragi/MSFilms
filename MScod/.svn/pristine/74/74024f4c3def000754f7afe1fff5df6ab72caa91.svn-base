@@ -1,0 +1,35 @@
+package presentacion.eventos;
+
+public class EventosPelicula {
+	
+	public static final int REGISTRAR_PELICULA = 31;
+	public static final int MODIFICAR_PELICULA = 32;
+	public static final int BORRAR_PELICULA = 33;
+	public static final int BUSCAR_PELICULA = 34;
+	public static final int MOSTRAR_LISTA_PELICULA = 35;
+	public static final int MOSTRAR_POR_FECHA_PELICULA = 36;
+	public static final int PELICULAS_MAS_VENDIDAS = 37;
+	
+	//------------
+	
+	public static final int REGISTRAR_PELICULA_OK = 38;
+	public static final int REGISTRAR_PELICULA_KO = 39;
+	
+	public static final int MODIFICAR_PELICULA_OK = 40;
+	public static final int MODIFICAR_PELICULA_KO = 41;
+	
+	public static final int BORRAR_PELICULA_OK = 42;
+	public static final int BORRAR_PELICULA_KO = 43;
+	
+	public static final int BUSCAR_PELICULA_OK = 44;
+	public static final int BUSCAR_PELICULA_KO = 45;
+	
+	public static final int MOSTRAR_LISTA_PELICULA_OK = 46;
+	public static final int MOSTRAR_LISTA_PELICULA_KO = 47;
+	
+	public static final int MOSTRAR_POR_FECHA_PELICULA_OK = 48;
+	public static final int MOSTRAR_POR_FECHA_PELICULA_KO = 49;
+	
+	public static final int PELICULAS_MAS_VENDIDAS_OK = 50;
+	public static final int PELICULAS_MAS_VENDIDAS_KO = 51;
+}

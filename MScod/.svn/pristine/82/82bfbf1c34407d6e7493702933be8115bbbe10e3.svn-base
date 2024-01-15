@@ -1,0 +1,88 @@
+package presentacion.command;
+
+import presentacion.command.empleado.*;
+import presentacion.command.factura.*;
+import presentacion.command.factura_tienda.*;
+import presentacion.command.gui.*;
+import presentacion.command.marca.*;
+import presentacion.command.pase.*;
+import presentacion.command.pelicula.*;
+import presentacion.command.producto.*;
+import presentacion.command.proveedor.*;
+import presentacion.controller.Evento;
+
+public class CommandFactoryImpl extends CommandFactory {
+	
+	public Command getCommand(Evento event) {
+		Command command = null;
+		
+		switch(event) {
+			case REGISTRAR_PELICULA: command = new RegistrarPeliculaCommand(); break; 
+			case MODIFICAR_PELICULA: command = new ModificarPeliculaCommand(); break;
+			case BORRAR_PELICULA: command = new BorrarPeliculaCommand(); break; 
+			case BUSCAR_PELICULA: command = new BuscarPeliculaCommand(); break;
+			case MOSTRAR_LISTA_PELICULA: command = new MostrarListaPeliculaCommand(); break;
+			case MOSTRAR_POR_FECHA_PELICULA: command = new MostrarPorFechaPeliculaCommand(); break;
+			case PELICULAS_MAS_VENDIDAS: command = new PeliculasMasVendidasCommand(); break;
+			
+			case REGISTRAR_PASE: command = new RegistrarPaseCommand(); break;
+			case MODIFICAR_PASE: command = new ModificarPaseCommand(); break;
+			case BORRAR_PASE: command = new BorrarPaseCommand(); break;
+			case BUSCAR_PASE: command = new BuscarPaseCommand(); break;
+			case MOSTRAR_LISTA_PASE: command = new MostrarListaPaseCommand(); break;
+			case MOSTRAR_POR_PELICULA_PASE: command = new MostrarPorPeliculaPaseCommand(); break;
+			
+			case REGISTRAR_EMPLEADO: command = new RegistrarEmpleadoCommand(); break;
+			case MODIFICAR_EMPLEADO: command = new ModificarEmpleadoCommand(); break;
+			case BORRAR_EMPLEADO: command = new BorrarEmpleadoCommand(); break;
+			case BUSCAR_EMPLEADO: command = new BuscarEmpleadoCommand(); break;
+			case MOSTRAR_LISTA_EMPLEADO: command = new MostrarListaEmpleadoCommand(); break;
+			case MOSTRAR_POR_JORNADA_EMPLEADO: command = new MostrarPorJornadaEmpleadoCommand(); break;
+			
+			case ABRIR_FACTURA: command = new AbrirFacturaCommand(); break;
+			case AÑADIR_PASE: command = new AnadirPaseFacturaCommand(); break;
+			case BUSCAR_FACTURA: command = new BuscarFacturaCommand(); break;
+			case CERRAR_FACTURA: command = new CerrarFacturaCommand(); break;
+			case DEVOLVER_PASE: command = new DevolverPaseFacturaCommand(); break;
+			case MOSTRAR_LISTA_FACTURA: command = new MostrarListaFacturaCommand(); break;
+			case QUITAR_PASE: command = new QuitarPaseFacturaCommand(); break;
+			
+			// JPA
+			case REGISTRAR_MARCA: command = new RegistrarMarcaCommand(); break;
+			case MODIFICAR_MARCA: command = new ModificarMarcaCommand(); break;
+			case BORRAR_MARCA: command = new BorrarMarcaCommand(); break;
+			case BUSCAR_MARCA: command = new BuscarMarcaCommand(); break;
+			case MOSTRAR_MARCAS: command = new MostrarMarcasCommand(); break;
+			case MOSTRAR_PRODUCTOS_POR_MARCA: command = new MostrarProductosPorMarcaCommand(); break;
+			
+			case REGISTRAR_PROVEEDOR: command = new RegistrarProveedorCommand(); break;
+			case MODIFICAR_PROVEEDOR: command = new ModificarProveedorCommand(); break;
+			case BORRAR_PROVEEDOR: command = new BorrarProveedorCommand(); break;
+			case BUSCAR_PROVEEDOR: command = new BuscarProveedorCommand(); break;
+			case MOSTRAR_PROVEEDORES: command = new MostrarProveedoresCommand(); break;
+			
+			case REGISTRAR_PRODUCTO: command = new RegistrarProductoCommand(); break;
+ 			case MODIFICAR_PRODUCTO: command = new ModificarProductoCommand(); break;
+			case BORRAR_PRODUCTO: command = new BorrarProductoCommand(); break;
+			case BUSCAR_PRODUCTO: command = new BuscarProductoCommand(); break;
+			case MOSTRAR_PRODUCTOS: command = new MostrarProductosCommand(); break;
+			case MOSTRAR_PRODUCTO_MAS_CALORICO: command = new MostrarProductoMasCaloricoCommand(); break;
+			case MOSTRAR_PRODUCTOS_CON_MAS_DE_X_STOCK: command = new MostrarProductosConMasDeXStockCommand(); break;
+			
+			case ABRIR_FACTURA_TIENDA: command = new AbrirFacturaTiendaCommand(); break;
+ 			case AÑADIR_PRODUCTO: command = new AnadirProductoCommand(); break;
+			case QUITAR_PRODUCTO: command = new QuitarProductoCommand(); break;
+			case CERRAR_FACTURA_TIENDA: command = new CerrarFacturaTiendaCommand(); break;
+			case DEVOLVER_PRODUCTO: command = new DevolverProductoCommand(); break;
+			case BUSCAR_FACTURA_TIENDA: command = new BuscarFacturaTiendaCommand(); break;
+			case LISTAR_FACTURAS_TIENDA: command = new ListarFacturasTiendaCommand(); break;			
+			
+			// añadir todos los case de mostrar gui en cascada
+			case MOSTRAR_INICIO: command = new MostrarGuiCommand(event); break;
+			
+			default: command = null; break;
+		}
+		
+		return command;
+	}
+}

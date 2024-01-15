@@ -1,0 +1,37 @@
+
+package integracion.transactions;
+
+import java.util.concurrent.ConcurrentHashMap;
+
+public class TransactionManagerImpl extends TransactionManager {
+	private ConcurrentHashMap<Thread, Transaction> map;
+
+	public TransactionManagerImpl() {
+		this.map = new ConcurrentHashMap<Thread, Transaction>();
+	}
+
+	public Transaction newTransaction() {
+		Thread currentThread = Thread.currentThread();
+		Transaction currentTransaction = map.get(currentThread);
+		if (currentTransaction == null) {
+			currentTransaction = new TransactionImpl();
+			currentTransaction.start();
+			map.put(currentThread, currentTransaction);
+		}/* else
+			try {
+				throw new Exception("No hay");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}*/ //NO SE HA PODIDO CREAR LA TRANSACCION
+		return currentTransaction;
+	}
+
+	public void removeTransaction() {
+		map.remove(Thread.currentThread());
+	}
+
+	public Transaction getTransaction() {
+		return map.get(Thread.currentThread());
+	}
+}

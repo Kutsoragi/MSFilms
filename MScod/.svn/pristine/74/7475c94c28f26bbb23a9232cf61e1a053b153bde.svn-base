@@ -1,0 +1,26 @@
+package presentacion.command.marca;
+
+import negocio.factoria_sa.SAFactoria;
+import presentacion.command.Command;
+import presentacion.controller.Context;
+import presentacion.controller.Evento;
+
+public class MostrarCaloriasTotalesDeMarcaCommand implements Command {
+
+	public Context execute(Object data) {
+		Context context;
+		try {
+			//TMarca res = SAFactoria.getInstancia().generarSAMarca().obtenerCaloriasDeMarca((Integer) data);
+			int res = SAFactoria.getInstancia().generarSAProducto().obtenerCaloriasTotalesPorMarca((Integer) data);
+			//if (res != null)
+			if (res > -1)
+				context = new Context(Evento.MOSTRAR_CALORIAS_TOTALES_DE_MARCA_OK, res);
+			else
+				context = new Context(Evento.MOSTRAR_CALORIAS_TOTALES_DE_MARCA_KO, "No se pudo obtener las calorias de la Marca con ID " + Integer.toString((Integer) data) + ".");
+		} catch(IllegalArgumentException e) {
+			context = new Context(Evento.MOSTRAR_CALORIAS_TOTALES_DE_MARCA_KO, e.getMessage());
+		}
+		
+		return context;
+	}
+}

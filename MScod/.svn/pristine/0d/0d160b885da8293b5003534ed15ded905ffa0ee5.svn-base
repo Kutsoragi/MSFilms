@@ -1,0 +1,29 @@
+package presentacion.eventos;
+
+public class EventosProducto {
+
+	public static final int REGISTRAR_PRODUCTO = 155;
+	public static final int MODIFICAR_PRODUCTO = 156;
+	public static final int BORRAR_PRODUCTO = 157;
+	public static final int BUSCAR_PRODUCTO = 158;
+	public static final int MOSTRAR_PRODUCTOS = 159;
+	public static final int MOSTRAR_PRODUCTO_MAS_CALORICO = 160;
+	public static final int MOSTRAR_PRODUCTOS_CON_MAS_DE_X_STOCK = 159;
+
+	// ------------
+
+	public static final int REGISTRAR_PRODUCTO_OK = 160;
+	public static final int REGISTRAR_PRODUCTO_KO = 161;
+
+	public static final int MODIFICAR_PRODUCTO_OK = 162;
+	public static final int MODIFICAR_PRODUCTO_KO = 163;
+
+	public static final int BORRAR_PRODUCTO_OK = 164;
+	public static final int BORRAR_PRODUCTO_KO = 165;
+
+	public static final int BUSCAR_PRODUCTO_OK = 166;
+	public static final int BUSCAR_PRODUCTO_KO = 167;
+
+	public static final int MOSTRAR_PRODUCTOS_CON_MAS_DE_X_STOCK_OK = 168;
+	public static final int MOSTRAR_PRODUCTOS_CON_MAS_DE_X_STOCK_KO = 169;
+}

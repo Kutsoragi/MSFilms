@@ -1,0 +1,160 @@
+package negocio.pelicula;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.LinkedList;
+import java.util.List;
+
+import integracion.factoria_dao.DAOFactoria;
+import integracion.pelicula.DAOPelicula;
+import integracion.transactions.Transaction;
+import integracion.transactions.TransactionManager;
+import negocio.factura.Pair;
+
+public class SAPeliculaImpl implements SAPelicula {
+
+	private final String FORMATO_FECHA = "YYYY-MM-DD";
+	
+	public int registrarPelicula(TPelicula pelicula) {
+		int respuesta = 0;
+		
+		Transaction transaction = TransactionManager.getInstance().newTransaction();
+		
+		DAOPelicula daoPelicula = DAOFactoria.getInstancia().generarDAOPelicula();
+		TPelicula peliculaLeida = daoPelicula.buscarPeliculaPorNombre(pelicula.nombre);
+			
+		if (peliculaLeida == null || !peliculaLeida.isActivo()){
+			respuesta = daoPelicula.registrarPelicula(pelicula);
+			transaction.commit();
+		}
+		else{
+			transaction.rollback();
+		}
+		TransactionManager.getInstance().removeTransaction();
+		return respuesta;	
+	}
+
+	public int modificarPelicula(TPelicula pelicula) {
+		
+		int respuesta = 0;
+		
+		Transaction transaction = TransactionManager.getInstance().newTransaction();
+		
+		DAOPelicula daoPelicula = DAOFactoria.getInstancia().generarDAOPelicula();
+		TPelicula peliculaLeida = daoPelicula.buscarPeliculaPorID(pelicula.getID());
+		
+		if (peliculaLeida != null && peliculaLeida.isActivo()){
+			respuesta = daoPelicula.modificarPelicula(pelicula);
+			transaction.commit();
+		}else{
+			transaction.rollback();
+		}
+		TransactionManager.getInstance().removeTransaction();
+		return respuesta;	
+	}
+
+	public int borrarPelicula(int id) {
+		if (id < 1) throw new IllegalArgumentException("ID incorrecto.");
+		
+		int respuesta = 0;
+		
+		Transaction transaction = TransactionManager.getInstance().newTransaction();
+
+		DAOPelicula daoPelicula = DAOFactoria.getInstancia().generarDAOPelicula();
+		TPelicula peliculaLeida = daoPelicula.buscarPeliculaPorID(id);
+		
+		if (peliculaLeida != null  && peliculaLeida.isActivo()){
+			respuesta = daoPelicula.borrarPelicula(id);
+			transaction.commit();
+		}
+		if(peliculaLeida == null){
+			transaction.rollback();
+		}
+		
+		TransactionManager.getInstance().removeTransaction();
+		return respuesta;	
+	}
+
+	public TPelicula buscarPeliculaPorID(int id) {
+		if (id < 1) throw new IllegalArgumentException("ID incorrecto.");
+		
+		TPelicula respuesta = null;
+		
+		Transaction transaction = TransactionManager.getInstance().newTransaction();
+		
+		DAOPelicula daoPelicula = DAOFactoria.getInstancia().generarDAOPelicula();
+		
+		
+		respuesta = daoPelicula.buscarPeliculaPorID(id);
+		
+	
+		if(respuesta != null  && respuesta.isActivo()){
+			transaction.commit();
+		}else{
+			transaction.rollback();
+		}
+		
+		TransactionManager.getInstance().removeTransaction();
+		return respuesta;	
+	}
+
+	public List<TPelicula> mostrarListaPeliculas() {
+		
+		List<TPelicula> respuesta = null;
+		
+		Transaction transaction = TransactionManager.getInstance().newTransaction();
+		
+		DAOPelicula daoPelicula = DAOFactoria.getInstancia().generarDAOPelicula();
+		
+		
+		respuesta = daoPelicula.mostrarListaPeliculas();
+		
+		if(respuesta != null){
+			transaction.commit();
+		}
+		else{
+			transaction.rollback();
+		}
+		
+		TransactionManager.getInstance().removeTransaction();
+		return respuesta;	
+	}
+
+	public List<TPelicula> mostrarPeliculasPorFecha(String fecha) {  	
+		List<TPelicula> respuesta = null;
+		
+		Transaction transaction = TransactionManager.getInstance().newTransaction();
+		
+		DAOPelicula daoPelicula = DAOFactoria.getInstancia().generarDAOPelicula();
+		
+		
+		verificarFecha(fecha); // (fecha != null)
+		respuesta = daoPelicula.mostrarPeliculasPorFecha(fecha);
+		
+		if(respuesta != null){
+			transaction.commit();
+		}else{
+			transaction.rollback();
+		}
+	
+		TransactionManager.getInstance().removeTransaction();
+		return respuesta;	
+	}
+	
+	public LinkedList<Pair<String, Integer>> peliculasMasVendidas() {  			
+		TransactionManager.getInstance().newTransaction();
+
+		DAOPelicula daoPelicula = DAOFactoria.getInstancia().generarDAOPelicula();
+		
+		TransactionManager.getInstance().removeTransaction();
+		return daoPelicula.mostrarTopPeliculasVendidas();	
+	}
+	
+	private void verificarFecha(String fecha) {
+		try {
+			new SimpleDateFormat(FORMATO_FECHA).parse(fecha);
+		} catch (ParseException e) {
+			throw new IllegalArgumentException("Fecha incorrecta. Formato fecha: " + FORMATO_FECHA + ".");
+		}
+	}
+}

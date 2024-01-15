@@ -1,0 +1,17 @@
+package negocio.proveedor;
+
+
+import org.junit.Test;
+
+public class SAProveedorTest {
+	
+	@Test
+	public void registrarProveedorExito(){
+		SAProveedor saProveedor = new SAProveedorImp();
+		
+		Proveedor proveedor = new Proveedor("nombreTest","666666666","test@test.es","test", true);
+		
+		
+	}
+
+}

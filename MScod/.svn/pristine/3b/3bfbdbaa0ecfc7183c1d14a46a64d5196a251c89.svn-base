@@ -1,0 +1,17 @@
+package negocio.pelicula;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import negocio.factura.Pair;
+
+public interface SAPelicula {
+
+	int registrarPelicula(TPelicula pelicula);
+	int modificarPelicula(TPelicula pelicula);
+	int borrarPelicula(int id);
+	TPelicula buscarPeliculaPorID(int id);
+	List<TPelicula> mostrarListaPeliculas();
+	List<TPelicula> mostrarPeliculasPorFecha(String fecha);
+	LinkedList<Pair<String, Integer>> peliculasMasVendidas();
+}

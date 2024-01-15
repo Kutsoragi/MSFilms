@@ -1,0 +1,171 @@
+package negocio.pase;
+
+
+import java.util.List;
+
+import integracion.factoria_dao.DAOFactoria;
+import integracion.pase.DAOPase;
+import integracion.pelicula.DAOPelicula;
+import integracion.transactions.Transaction;
+import integracion.transactions.TransactionManager;
+import negocio.pelicula.TPelicula;
+
+
+public class SAPaseImpl implements SAPase {
+
+	public int registrarPase(TPase pase) {
+		
+		int respuesta = 0;
+		
+		Transaction transaction = TransactionManager.getInstance().newTransaction();
+		
+		DAOPase daoPase = DAOFactoria.getInstancia().generarDAOPase();
+		DAOPelicula daoPeli = DAOFactoria.getInstancia().generarDAOPelicula();
+		TPase paseLeido = daoPase.buscarPasePorID(pase.getID());
+		TPelicula peliLeida = daoPeli.buscarPeliculaPorID(pase.getPelicula());
+		if (peliLeida != null){
+			if (daoPase.franjaValida(pase)){
+				if (paseLeido == null || !paseLeido.isActivo()){
+					respuesta = daoPase.registrarPase(pase);
+					transaction.commit();
+				}else{
+					transaction.rollback();
+				}
+			}
+			else{
+				transaction.rollback();
+				throw new IllegalArgumentException("No puede haber dos pases en la misma sala en un mismo horario");
+			}
+		}
+		else{
+			throw new IllegalArgumentException("No existe la pelicula");
+		}
+		TransactionManager.getInstance().removeTransaction();
+		return respuesta;
+	}
+	
+	public int borrarPase(int id) {
+		if (id < 1) throw new IllegalArgumentException("ID incorrecto.");
+		
+		int respuesta = 0;
+		
+		Transaction transaction = TransactionManager.getInstance().newTransaction();
+
+		
+		DAOPase daoPase = DAOFactoria.getInstancia().generarDAOPase();
+		TPase paseLeido = daoPase.buscarPasePorID(id);
+		
+		if (paseLeido != null && paseLeido.isActivo()){
+			respuesta = daoPase.borrarPase(id);
+			transaction.commit();
+		}
+		else{
+			transaction.rollback();
+		}
+		TransactionManager.getInstance().removeTransaction();
+		return respuesta;	
+	}
+
+	public TPase buscarPasePorID(int id) {
+		if (id < 1) throw new IllegalArgumentException("ID incorrecto.");
+		
+		TPase pase = null;
+		
+		Transaction transaction = TransactionManager.getInstance().newTransaction();
+
+		DAOPase daoPase = DAOFactoria.getInstancia().generarDAOPase();
+		
+		pase = daoPase.buscarPasePorID(id);
+
+		if(pase != null){
+			transaction.commit();
+		}else{
+			transaction.rollback();
+		}
+		TransactionManager.getInstance().removeTransaction();
+		return pase;	
+	}
+	
+	public int modificarPase(TPase pase) {
+		
+		
+		int respuesta = 0;
+		
+		Transaction transaction = TransactionManager.getInstance().newTransaction();
+		
+		DAOPase daoPase = DAOFactoria.getInstancia().generarDAOPase();
+		TPase paseLeido = daoPase.buscarPasePorID(pase.getID());
+		DAOPelicula daoPeli = DAOFactoria.getInstancia().generarDAOPelicula();
+		TPelicula peliLeida = daoPeli.buscarPeliculaPorID(pase.getPelicula());
+		
+		if(peliLeida != null){
+			if (paseLeido != null && paseLeido.isActivo()){
+				if (daoPase.franjaValida(pase)){
+					respuesta = daoPase.modificarPase(pase);
+					transaction.commit();
+				}
+				else{
+					transaction.rollback();
+					throw new IllegalArgumentException("No puede haber dos pases en la misma sala en un mismo horario");
+				}
+			}
+			else{
+				transaction.rollback();
+			}
+		}
+		else{
+			transaction.rollback();
+			throw new IllegalArgumentException("No existe la pelicula");
+		}
+		
+		TransactionManager.getInstance().removeTransaction();
+		return respuesta;	
+	}
+
+	public List<TPase> mostrarListaPases() {
+		
+		List<TPase> respuesta = null;
+		
+		Transaction transaction = TransactionManager.getInstance().newTransaction();
+		
+		DAOPase daoPase = DAOFactoria.getInstancia().generarDAOPase();
+		
+		
+		respuesta = daoPase.mostrarListaPases();
+		
+		if(respuesta != null){
+			transaction.commit();
+		}
+		else{
+			transaction.rollback();
+		}
+		TransactionManager.getInstance().removeTransaction();
+		return respuesta;
+	}
+
+	public List<TPase> mostrarPasesPorPelicula(int idPelicula) {
+		if (idPelicula < 1) throw new IllegalArgumentException("ID incorrecto.");
+		
+		List<TPase> respuesta = null;
+		
+		Transaction transaction = TransactionManager.getInstance().newTransaction();
+		
+		DAOPelicula daoPelicula = DAOFactoria.getInstancia().generarDAOPelicula();
+		TPelicula peliculaLeida = daoPelicula.buscarPeliculaPorID(idPelicula);
+		if (peliculaLeida != null && peliculaLeida.isActivo()) {
+			DAOPase daoPase = DAOFactoria.getInstancia().generarDAOPase();
+			respuesta = daoPase.mostrarPasesPorPeliculas(idPelicula);
+			
+			if(respuesta != null){
+				transaction.commit();
+			}else{
+				transaction.rollback();
+			}
+		}
+		else{
+			transaction.rollback();
+		}
+		TransactionManager.getInstance().removeTransaction();
+		return respuesta;	
+	}
+}

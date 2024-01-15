@@ -1,0 +1,46 @@
+package integracion.query;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.LinkedList;
+
+import integracion.transactions.TransactionManager;
+import negocio.empleado.TEmpleado;
+import negocio.empleado.TEmpleadoCompleto;
+import negocio.empleado.TEmpleadoParcial;
+
+public class MostrarEmpleadosPorJornada implements Query{
+
+	public Object execute(Object param) throws Exception{
+		LinkedList<TEmpleado> lista = new LinkedList<TEmpleado>();
+		Connection conexion;
+		PreparedStatement pStatement;
+		ResultSet rs;
+		
+		try {
+			conexion = (Connection)TransactionManager.getInstance().getTransaction().getResource();
+			
+			if((Boolean) param){
+				pStatement = conexion.prepareStatement("SELECT * FROM empleado WHERE activo = true AND tipo_empleado = 'completo'");
+				rs = pStatement.executeQuery();
+				while(rs.next()){
+					lista.add(new TEmpleadoCompleto(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getBoolean(4), rs.getDouble(8)));
+				}
+			}
+			else{
+				pStatement = conexion.prepareStatement("SELECT * FROM empleado WHERE tipo_empleado = 'parcial' AND activo = true");
+				rs = pStatement.executeQuery();
+				while(rs.next()){
+					lista.add(new TEmpleadoParcial(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getBoolean(4), rs.getInt(6), rs.getDouble(7)));
+				}
+			}
+			pStatement.close();
+			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lista;
+	}
+}

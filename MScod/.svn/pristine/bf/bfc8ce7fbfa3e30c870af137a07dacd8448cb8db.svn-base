@@ -1,0 +1,8 @@
+package presentacion.eventos;
+
+public class EventosGui {
+	
+	public static final int MOSTRAR_INICIO = 0;
+	public static final int MOSTRAR_PELICULA = 1;
+	
+}
